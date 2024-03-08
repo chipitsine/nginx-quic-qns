@@ -14,16 +14,8 @@ RUN git clone --depth=1 https://github.com/google/boringssl.git
 RUN  cd boringssl  && \
   mkdir build && \
   cd build && \
-  cmake -GNinja .. && \
-  ninja && \
-  cd ../.. && \
-  mkdir -p boringssl/.openssl/lib && \
-  cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.openssl/lib && \
-  cd boringssl/.openssl && \
-  ln -s ../include . && \
-  cd ../..
-
-RUN touch 'boringssl/.openssl/include/openssl/ssl.h'
+  cmake -GNinja -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=1 .. && \
+  ninja 
 
 RUN hg clone http://hg.nginx.org/nginx
 

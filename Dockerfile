@@ -47,6 +47,8 @@ RUN cd nginx && \
 RUN cd nginx && make -j$(nproc)
 RUN cd nginx && make install
 
+RUN cd nginx && ldd objs/nginx
+RUN cd nginx && objs/nginx -V
 
 FROM martenseemann/quic-network-simulator-endpoint:latest
 

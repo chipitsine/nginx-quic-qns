@@ -2,7 +2,7 @@ FROM martenseemann/quic-network-simulator-endpoint:latest AS builder
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
-RUN apt-get install -qy mercurial build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev curl git cmake ninja-build gnutls-bin iptables
+RUN apt-get install -qy mercurial build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev curl git cmake ninja-build gnutls-bin iptables libasan5
 
 RUN useradd nginx
 
@@ -41,8 +41,8 @@ RUN cd nginx && \
     --with-http_ssl_module \
     --with-http_v2_module \
     --with-http_v3_module \
-    --with-cc-opt='-I/boringssl/include -O0 -fno-common -fno-omit-frame-pointer -DNGX_QUIC_DRAFT_VERSION=29 -DNGX_HTTP_V3_HQ=1' \
-    --with-ld-opt='-L/boringssl/build/ssl -L/boringssl/build/crypto'
+    --with-cc-opt='-I/boringssl/include -O0 -fno-common -fno-omit-frame-pointer -DNGX_QUIC_DRAFT_VERSION=29 -DNGX_HTTP_V3_HQ=1 -ggdb -fsanitize=address' \
+    --with-ld-opt='-L/boringssl/build/ssl -L/boringssl/build/crypto -fsanitize=address'
 
 RUN cd nginx && make -j$(nproc)
 RUN cd nginx && make install

@@ -49,9 +49,16 @@ RUN cd nginx && make install
 
 FROM martenseemann/quic-network-simulator-endpoint:latest
 
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update
+RUN apt-get install -qy libasan5
+
 COPY --from=builder /usr/sbin/nginx /usr/sbin/
 COPY --from=builder /etc/nginx /etc/nginx
 COPY --from=builder /boringssl/build/ssl/libssl.so* /boringssl/build/crypto/libcrypto.so* /lib/x86_64-linux-gnu
+
+RUN ldd /usr/sbin/nginx
+RUN nginx -V
 
 RUN useradd nginx
 RUN mkdir -p /var/cache/nginx /var/log/nginx/

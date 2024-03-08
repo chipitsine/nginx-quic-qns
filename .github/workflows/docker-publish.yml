@@ -28,7 +28,7 @@ jobs:
 
       - name: Get the commit ID tag of the latest image with Skopeo
         run: |
-          LATEST_IMAGE_COMMIT=$(skopeo inspect docker://ghcr.io/nginx/nginx-quic-qns:latest | jq -r '.Labels.commit_id' || echo "none")
+          LATEST_IMAGE_COMMIT=$(skopeo inspect docker://ghcr.io/chipitsine/nginx-quic-qns:latest | jq -r '.Labels.commit_id' || echo "none")
           echo "latest_image_commit=$LATEST_IMAGE_COMMIT" >> $GITHUB_ENV
 
       - name: Compare commit IDs

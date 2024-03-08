@@ -47,13 +47,15 @@ RUN cd nginx && \
 RUN cd nginx && make -j$(nproc)
 RUN cd nginx && make install
 
-RUN cd nginx && ldd objs/nginx
-RUN cd nginx && objs/nginx -V
-
 FROM martenseemann/quic-network-simulator-endpoint:latest
 
 COPY --from=builder /usr/sbin/nginx /usr/sbin/
 COPY --from=builder /etc/nginx /etc/nginx
+COPY --from=builder /boringssl/build/ssl/libssl.so* /boringssl/build/crypto/libcrypto.so* /usr/local/lib
+
+RUN ldd /usr/sbin/nginx
+
+RUN nginx -V
 
 RUN useradd nginx
 RUN mkdir -p /var/cache/nginx /var/log/nginx/
